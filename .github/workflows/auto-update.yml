@@ -13,10 +13,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Replace index.html with new version
-        run: |
-          # Download updated index.html from a URL
-          curl -o index.html https://your-source.com/latest/index.html
+    - name: Download index.html from private repo
+  run: |
+    curl -H "Authorization: token ${{ secrets.PAT }}" \
+         -H "Accept: application/vnd.github.v3.raw" \
+         -L \
+         -o index.html \
+         https://api.github.com/repos/porcupine-tech/dhsourcerepo/contents/index.html
 
       - name: Commit and push changes
         run: |
