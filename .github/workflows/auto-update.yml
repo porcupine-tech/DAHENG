@@ -1,0 +1,27 @@
+name: Auto Update index.html
+
+on:
+  schedule:
+    - cron: '0 16 * * *'  # Runs daily at 4 PM UTC (12 AM Malaysia Time)
+  workflow_dispatch:       # Optional: manual trigger
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Replace index.html with new version
+        run: |
+          # Download updated index.html from a URL
+          curl -o index.html https://your-source.com/latest/index.html
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add index.html
+          git commit -m "Auto-update index.html on $(date -u)" || echo "No changes to commit"
+          git push
