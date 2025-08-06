@@ -2,29 +2,37 @@ name: Auto Update index.html
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # Runs daily at 4 PM UTC (12 AM Malaysia Time)
-  workflow_dispatch:       # Optional: manual trigger
+    - cron: '0 16 * * *' # Runs daily at 4 PM UTC. In Bangkok (UTC+7), this is 11 PM.
+                       # In Malaysia (UTC+8), this would be 12 AM (midnight).
+  workflow_dispatch:   # Optional: manual trigger
 
 jobs:
   update-index:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Use the latest version for security and features
 
-    - name: Download index.html from private repo
-  run: |
-    curl -H "Authorization: token ${{ secrets.PAT }}" \
-         -H "Accept: application/vnd.github.v3.raw" \
-         -L \
-         -o index.html \
-         https://api.github.com/repos/porcupine-tech/dhsourcerepo/contents/index.html
+      - name: Download index.html from private repo
+        run: |
+          # The curl command looks correct for fetching raw content with a PAT
+          curl -H "Authorization: token ${{ secrets.PAT }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -L \
+               -o index.html \
+               https://api.github.com/repos/porcupine-tech/dhsourcerepo/contents/index.html
+          
+          # Optional: Add a check if the file was downloaded successfully
+          if [ ! -f index.html ]; then
+            echo "Error: index.html was not downloaded. Check PAT permissions or URL."
+            exit 1
+          fi
 
       - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions[bot]" # Recommended bot user
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com" # Recommended bot email
+          
           git add index.html
           git commit -m "Auto-update index.html on $(date -u)" || echo "No changes to commit"
           git push
