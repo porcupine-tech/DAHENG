@@ -2,11 +2,10 @@ name: Auto Update index.html
 
 on:
   schedule:
-    - cron: '15 11 * * *' # minute hour day month "every weekday"
-                       #  11:15 AM UTC = 7:15 PM (UTC+8) 
+    - cron: '0 16 * * *' # Runs daily at 4 PM UTC.
   workflow_dispatch:   # Optional: manual trigger
 
-  permissions: # <--- ADD THIS SECTION
+permissions: # <--- ADD THIS SECTION
   contents: write # <--- Grant write permission for contents
 
 jobs:
@@ -14,18 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Use the latest version for security and features
+        uses: actions/checkout@v4
 
       - name: Download index.html from private repo
         run: |
-          # The curl command looks correct for fetching raw content with a PAT
           curl -H "Authorization: token ${{ secrets.PAT }}" \
                -H "Accept: application/vnd.github.v3.raw" \
                -L \
                -o index.html \
                https://api.github.com/repos/porcupine-tech/dhsourcerepo/contents/index.html
           
-          # Optional: Add a check if the file was downloaded successfully
           if [ ! -f index.html ]; then
             echo "Error: index.html was not downloaded. Check PAT permissions or URL."
             exit 1
@@ -33,8 +30,8 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]" # Recommended bot user
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com" # Recommended bot email
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add index.html
           git commit -m "Auto-update index.html on $(date -u)" || echo "No changes to commit"
