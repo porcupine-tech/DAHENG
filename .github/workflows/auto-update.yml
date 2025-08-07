@@ -6,6 +6,9 @@ on:
                        #  11:15 AM UTC = 7:15 PM (UTC+8) 
   workflow_dispatch:   # Optional: manual trigger
 
+  permissions: # <--- ADD THIS SECTION
+  contents: write # <--- Grant write permission for contents
+
 jobs:
   update-index:
     runs-on: ubuntu-latest
