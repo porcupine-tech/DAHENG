@@ -2,8 +2,8 @@ name: Auto Update index.html
 
 on:
   schedule:
-    - cron: '0 16 * * *' # Runs daily at 4 PM UTC. In Bangkok (UTC+7), this is 11 PM.
-                       # In Malaysia (UTC+8), this would be 12 AM (midnight).
+    - cron: '15 11 * * *' # minute hour day month "every weekday"
+                       #  11:15 AM UTC = 7:15 PM (UTC+8) 
   workflow_dispatch:   # Optional: manual trigger
 
 jobs:
