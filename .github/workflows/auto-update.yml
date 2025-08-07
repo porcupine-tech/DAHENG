@@ -2,7 +2,7 @@ name: Auto Update index.html
 
 on:
   schedule:
-    - cron: '0 16 * * *' # Runs daily at 4 PM UTC.
+    - cron: '49 18 * * *' # Runs daily at 4 PM UTC.
   workflow_dispatch:   # Optional: manual trigger
 
 permissions: # <--- ADD THIS SECTION
